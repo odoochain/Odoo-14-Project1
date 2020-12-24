@@ -1,0 +1,86 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="vehicle_rental.list">
+      <field name="name">vehicle_rental list</field>
+      <field name="model">vehicle_rental.vehicle_rental</field>
+      <field name="arch" type="xml">
+      </field>
+    </record>
+-->
+    <!-- Tree view -->
+    <!--
+    <record id="vehicle_rental.action_window" model="ir.ui.view">
+      <field name="name">Vehicle Tree</field>
+      <field name="model">vehicle_rental.vehicle_rental</field>
+      <field name="arch" type="xml">
+        <tree string="vehicle">
+          <field name="vehicle"/>
+          <field name="v_name"/>
+          <field name="brand"/>
+        </tree>
+  </field>
+-->
+
+
+     <!-- Vehicles Search View -->
+
+        <record model="ir.ui.view" id="vehicle_search">
+            <field name="name">Rent Vehicles 1.0</field>
+            <field name="model">vehicle_rental.vehicle_rental</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Vehicle create">
+                    <field name="vehicle" />
+					<field name="v_name" />
+					<field name="brand" select="1" />
+					<field name="registration" />
+					<field name="model" />
+					<field name="rent" />
+					<field name="state" />
+                </tree>
+            </field>
+        </record>
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="vehicle_rental.action_window">
+      <field name="name">Rent Vehicles 1.0</field>
+      <field name="res_model">vehicle_rental.vehicle_rental</field>
+      <field name="view_mode">tree,form,kanban</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+
+    <record model="ir.actions.server" id="vehicle_rental.action_server">
+      <field name="name">vehicle_rental server</field>
+      <field name="model_id" ref="model_vehicle_rental_vehicle_rental"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+
+    <menuitem name="Vehicle rental" id="vehicle_rental.menu_root"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="Rent Vehicles" id="vehicle_rental.menu_1" parent="vehicle_rental.menu_root"/>
+
+
+    <!-- actions -->
+
+    <menuitem name="Create" id="vehicle_rental.menu_1_list" parent="vehicle_rental.menu_1"
+              action="vehicle_rental.action_window"/>
+
+  </data>
+</odoo>
