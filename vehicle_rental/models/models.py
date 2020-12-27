@@ -7,7 +7,7 @@ class vehicle_rental(models.Model):
     _name = 'vehicle_rental.vehicle_rental'
     _description = 'vehicle_rental.vehicle_rental'
 
-    vehicle = fields.Char(string='Vehicle', required=True)
+    vehicle = fields.Many2one('fleet.vehicle', string="Vehicle")
     v_name = fields.Char(string='Name')
     brand = fields.Char(string='Brand')
     registration = fields.Date(string="Registration Date")
