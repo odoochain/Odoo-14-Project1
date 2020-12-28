@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "vehicle_rental",
+    'name': "Vehicle Rental",
 
     'summary': """
         vehicle rental""",
@@ -26,6 +26,7 @@
         # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'security/ir.model.access.csv'
 
     ],
     # only loaded in demonstration mode

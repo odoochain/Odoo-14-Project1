@@ -1,14 +1,22 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="vehicle_rental.list">
-      <field name="name">vehicle_rental list</field>
-      <field name="model">vehicle_rental.vehicle_rental</field>
+      <!-- fleet inheritance -->
+
+    <record model="ir.ui.view" id="fleet_inherit">
+      <field name="name">vehicle_rental_inherit</field>
+      <field name="model">fleet.vehicle</field>
+      <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
       <field name="arch" type="xml">
+           <field name="manager_id" />
+           <field name="first_contract_date" position="replace">
+           <field name="registration_date" />
+           </field>
       </field>
     </record>
--->
+
+
+
+
     <!-- Tree view -->
     <!--
     <record id="vehicle_rental.action_window" model="ir.ui.view">
@@ -37,8 +45,10 @@
 					<field name="brand" select="1" />
 					<field name="registration" />
 					<field name="model" />
-					<field name="rent" />
+                    <field name="currency_id" invisible="1"/>
+					<field name="rent" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="False" />
 					<field name="state" />
+
                 </tree>
             </field>
         </record>
@@ -70,7 +80,7 @@
 
     <!-- Top menu item -->
 
-    <menuitem name="Vehicle rental" id="vehicle_rental.menu_root"/>
+    <menuitem name="Vehicle Rental" id="vehicle_rental.menu_root"/>
 
     <!-- menu categories -->
 
