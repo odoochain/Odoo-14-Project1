@@ -14,40 +14,60 @@
       </field>
     </record>
 
+ <!-- Kanban view -->
+
+<record model="ir.ui.view" id="vehicle_kanban">
+            <field name="name">RentVehicles</field>
+            <field name="model">vehicle_rental.vehicle_rental</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="v_name"/>
+                    <field name="brand"/>
+                    <field name="model"/>
+                    <field name="rent"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="vehicle_rental.action_window">
+
+                                <div class="vehicle_kanban_view_details">
+                                    <strong class="vehicle_kanban_record_title">
+                                     Vehicle : <field name="v_name"/>
+                                    </strong>
+                                    </div>
+
+
+                                <div t-if="record.brand.value">
+                                       Brand: <t t-esc="record.brand.value"/>
+                                </div>
+                                    <div t-if="record.rent.value">
+                                       Rent : <t t-esc="record.rent.value"/>
+                                </div>
+                                </div>
+
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
 
 
 
-    <!-- Tree view -->
-    <!--
-    <record id="vehicle_rental.action_window" model="ir.ui.view">
-      <field name="name">Vehicle Tree</field>
-      <field name="model">vehicle_rental.vehicle_rental</field>
-      <field name="arch" type="xml">
-        <tree string="vehicle">
-          <field name="vehicle"/>
-          <field name="v_name"/>
-          <field name="brand"/>
-        </tree>
-  </field>
--->
+     <!-- Vehicles Tree View -->
 
-
-     <!-- Vehicles Search View -->
-
-        <record model="ir.ui.view" id="vehicle_search">
-            <field name="name">Rent Vehicles 1.0</field>
+        <record model="ir.ui.view" id="vehicle_new">
+            <field name="name">RentVehicles</field>
             <field name="model">vehicle_rental.vehicle_rental</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Vehicle create">
-                    <field name="vehicle" />
-					<field name="v_name" />
+                <tree string="Vehicle tree">
+                    <field name="v_name" />
+					<field name="vehicle" />
 					<field name="brand" select="1" />
-					<field name="registration" />
-					<field name="model" />
-                    <field name="currency_id" invisible="1"/>
-					<field name="rent" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="False" />
 					<field name="state" />
+                    <field name="model" optional="hide"/>
+                    <field name="currency_id" invisible="1"/>
+					<field name="rent" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="False" optional="hide" />
 
                 </tree>
             </field>
@@ -56,27 +76,38 @@
     <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="vehicle_rental.action_window">
-      <field name="name">Rent Vehicles 1.0</field>
+      <field name="name">Rent Vehicles</field>
       <field name="res_model">vehicle_rental.vehicle_rental</field>
       <field name="view_mode">tree,form,kanban</field>
+
     </record>
 
-
-    <!-- server action to the one above -->
-
-    <record model="ir.actions.server" id="vehicle_rental.action_server">
-      <field name="name">vehicle_rental server</field>
-      <field name="model_id" ref="model_vehicle_rental_vehicle_rental"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
--->
+       <record model="ir.ui.view" id="vehicle_search">
+            <field name="name">vehicle_form</field>
+            <field name="model">vehicle_rental.vehicle_rental</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle create">
+                    <header>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                    <sheet>
+                       <group>
+                    <group>
+                    <field name="v_name" />
+					<field name="vehicle" />
+					<field name="brand" select="1" />
+                       </group>
+                       <group>
+                    <field name="model" optional="hide"/>
+                    <field name="currency_id" invisible="1"/>
+					<field name="rent" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="False" optional="hide" />
+                       </group>
+                       </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
     <!-- Top menu item -->
 
@@ -88,6 +119,7 @@
 
 
     <!-- actions -->
+
 
     <menuitem name="Create" id="vehicle_rental.menu_1_list" parent="vehicle_rental.menu_1"
               action="vehicle_rental.action_window"/>
