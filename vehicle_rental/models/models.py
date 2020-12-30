@@ -10,14 +10,16 @@ class vehicle_rental(models.Model):
 
     vehicle = fields.Many2one('fleet.vehicle', string="Vehicle")
     v_name = fields.Char(string='Name', required=True)
-    brand = fields.Many2one('fleet.vehicle.model.brand', string="Brand")
-    registration = fields.Date(string="Registration Date")
+    brand = fields.Many2one(string='Brand',related='vehicle.brand_id', readonly=True)
+    registration = fields.Date(string='Registration Date',related='vehicle.registration_date',readonly=True)
     model = fields.Char(string='Model')
     rent = fields.Monetary(string='Rent')
     currency_id = fields.Many2one('res.currency', string='Currency',
-                                  default=lambda self: self.env.user.company_id.currency_id)
-    state = fields.Selection([('type1', 'Available'), ('type2', 'Not Available'), ('type3', 'Sold')], 'Type',
-                             default='type1')
+                                  default=lambda
+                                      self: self.env.user.company_id.currency_id)
+    state = fields.Selection(
+        [('Available', 'Available'), ('Not Available', 'Not Available'),
+         ('Sold', 'Sold')], 'Status', default='Available')
 
 
 class fleet_inherit(models.Model):
