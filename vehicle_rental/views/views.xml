@@ -3,7 +3,7 @@
       <!-- fleet inheritance -->
 
     <record model="ir.ui.view" id="fleet_inherit">
-      <field name="name">vehicle_rental_inherit</field>
+      <field name="name">vehicle.rental.inherit</field>
       <field name="model">fleet.vehicle</field>
       <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
       <field name="arch" type="xml">
@@ -20,14 +20,14 @@
      <!-- Vehicles Tree View -->
 
         <record model="ir.ui.view" id="vehicle_new">
-            <field name="name">RentVehicles</field>
-            <field name="model">vehicle_rental.vehicle_rental</field>
+            <field name="name">vehicle.rental.tree</field>
+            <field name="model">vehicle.rental</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Vehicle tree">
-                    <field name="v_name" />
-					<field name="vehicle" />
-					<field name="brand" select="1" />
+                    <field name="vehicle_name" />
+					<field name="vehicle_id" />
+					<field name="brand_id" select="1" />
 					<field name="state" />
                     <field name="model" optional="hide"/>
                     <field name="currency_id" invisible="1"/>
@@ -41,15 +41,18 @@
       <!-- Vehicles Search and Filter View -->
 
         <record model="ir.ui.view" id="vehicle_searching">
-            <field name="name">RentSearch</field>
-            <field name="model">vehicle_rental.vehicle_rental</field>
+            <field name="name">vehicle.rental.search</field>
+            <field name="model">vehicle.rental</field>
             <field name="arch" type="xml">
          <search string="Vehicle Search">
-                    <field name="vehicle" filter_domain="['|',('v_name','ilike',self),('brand','ilike',self)]"/>
+                    <field name="vehicle_name" filter_domain="[('vehicle_name','ilike',self)]" string="Vehicle"/>
+                    <field name="brand_id" filter_domain="[('brand_id','ilike',self)]" string="Brand"/>
 
                 <filter name="filter_name_avail" string="Available" domain="[('state','=','Available')]"/>
                 <filter name="filter_name_notavail" string="Not Available" domain="[('state','=','Not Available')]"/>
-               </search>
+               <filter string="Model" name="brand_group" context="{'group_by':'model'}"/>
+               <filter string="Brand" name="brand_group" context="{'group_by':'brand_id'}"/>
+         </search>
             </field>
 
         </record>
@@ -58,16 +61,51 @@
     <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="vehicle_rental.action_window">
-      <field name="name">Rent Vehicles</field>
-      <field name="res_model">vehicle_rental.vehicle_rental</field>
-      <field name="view_mode">tree,form,kanban</field>
+      <field name="name">Vehicle Rental</field>
+      <field name="res_model">vehicle.rental</field>
+      <field name="view_mode">kanban,tree,form</field>
+      <field name="context">{'search_default_filter_name_avail': 1}</field>
+        <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                No Vehicles Added
+              </p>
+            </field>
+    </record>
+
+
+    <!-- kanban View -->
+
+      <record id="im_livechat_channel_rule_view_kanban" model="ir.ui.view">
+            <field name="name">vehicle.rental.kanban</field>
+            <field name="model">vehicle.rental</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="vehicle_name"/>
+                    <field name="brand_id"/>
+                    <field name="rent"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                               <div>Vehicle Name:<strong><field name="vehicle_name"/></strong></div>
+                                <div> Brand:<field name="brand_id"/> </div>
+                                 <div>Rent:<field name="rent"/></div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+
+
 
         <!-- Form view -->
 
-    </record>
+
        <record model="ir.ui.view" id="vehicle_search">
-            <field name="name">vehicle_form</field>
-            <field name="model">vehicle_rental.vehicle_rental</field>
+            <field name="name">vehicle.rental.form</field>
+            <field name="model">vehicle.rental</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Vehicle create">
@@ -77,9 +115,9 @@
                     <sheet>
                        <group>
                     <group>
-                    <field name="v_name"/>
-					<field name="vehicle"/>
-					<field name="brand"/>
+                    <field name="vehicle_name"/>
+					<field name="vehicle_id"/>
+					<field name="brand_id"/>
                        </group>
                        <group>
                     <field name="model"/>
@@ -95,42 +133,7 @@
 
 
 
-      <!-- Kanban view -->
 
-<record model="ir.ui.view" id="vehicle_kanban">
-            <field name="name">RentVehicles</field>
-            <field name="model">vehicle_rental.vehicle_rental</field>
-            <field name="type">kanban</field>
-            <field name="arch" type="xml">
-                <kanban>
-                    <field name="v_name"/>
-                    <field name="brand"/>
-                    <field name="model"/>
-                    <field name="rent"/>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div t-attf-class="vehicle_rental.action_window">
-
-                                <div class="vehicle_kanban_view_details">
-                                    <strong class="vehicle_kanban_record_title">
-                                     Vehicle : <field name="v_name"/>
-                                    </strong>
-                                    </div>
-
-
-                                <div t-if="record.brand.value">
-                                       Brand: <t t-esc="record.brand.value"/>
-                                </div>
-                                    <div t-if="record.rent.value">
-                                       Rent : <t t-esc="record.rent.value"/>
-                                </div>
-                                </div>
-
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
 
     <!-- Top menu item -->
 
@@ -144,8 +147,11 @@
     <!-- actions -->
 
 
-    <menuitem name="Create" id="vehicle_rental.menu_1_list" parent="vehicle_rental.menu_1"
+    <menuitem name="Rental" id="vehicle_rental.menu_1_rental" parent="vehicle_rental.menu_1"
               action="vehicle_rental.action_window"/>
+    <menuitem name="Rent Request" id="vehicle_rental.menu_rental_request" parent="vehicle_rental.menu_1"
+              action="vehicle_rental.action_window"/>
+
 
   </data>
 </odoo>
