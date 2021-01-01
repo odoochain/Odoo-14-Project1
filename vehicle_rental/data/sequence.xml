@@ -4,7 +4,7 @@
 
         <!-- Sequences for vehicle rent request -->
         <record id="seq_sale_order" model="ir.sequence">
-            <field name="name">Vehicle Rental Request</field>
+            <field name="name">Vehicle</field>
             <field name="code">vehicle.rental.sequence</field>
             <field name="prefix">VR</field>
             <field name="padding">5</field>
