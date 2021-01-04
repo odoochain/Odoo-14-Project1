@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
+import datetime
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from datetime import datetime
 
 class VehicleRental(models.Model):
     _name = 'vehicle.rental'
     _rec_name = 'vehicle_name'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle",
-                                 domain=[('state_id', '=', 3)])
+                                 domain=[('state_id', '=', 3)],required=True)
     vehicle_name = fields.Char(string='Name')
     brand_id = fields.Many2one(string='Brand', related='vehicle_id.brand_id',
                                readonly=True, store=True)
@@ -28,15 +30,27 @@ class VehicleRental(models.Model):
         ('vehicle_name', 'unique (vehicle_name)',
          'Vehicle name already exists!!')]
 
-    @api.onchange('registration')
-    def _onchange_model_year(self):
-        for rec in self:
-            rec.model=rec.registration
-
     @api.onchange('vehicle_id')
     def _onchange_vehicle_name(self):
         for rec in self:
             rec.vehicle_name = rec.vehicle_id.name
+
+    @api.onchange('registration')
+    def _onchange_reg_year(self):
+        for rec in self:
+            if rec.registration:
+                rec.model=rec.registration.strftime("%Y")
+
+    def vehicle_requests(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Vehicles',
+            'view_mode': 'tree',
+            'res_model': 'rent.request',
+            'domain': [('vehicle_id', '=', self.id)],
+            'context': "{'create': False}"
+        }
 
 
 class RentRequest(models.Model):
@@ -57,7 +71,18 @@ class RentRequest(models.Model):
     state = fields.Selection(
         [('Draft', 'Draft'), ('Confirm', 'Confirm'),
          ('Returned', 'Returned')], 'State', default='Draft')
+    time = fields.Selection(
+        [('Hour', 'Hour'), ('Day', 'Day'),
+         ('Week', 'Week'),('Month', 'Month')], 'Time', default='Hour')
+    amount = fields.Monetary(string='Amount')
 
+
+    @api.onchange('from_date','to_date')
+    def _onchange_get_period(self):
+        for rec in self:
+            if rec.from_date and rec.to_date:
+                if rec.from_date < rec.to_date:
+                    rec.period = (rec.to_date-rec.from_date).days
 
     @api.model
     def create(self, vals):
@@ -73,6 +98,15 @@ class RentRequest(models.Model):
             if rec.to_date < rec.from_date:
                 raise ValidationError(('Sorry Date Invalid'))
 
+    def action_confirm(self):
+        for rec in self:
+            rec.state='Confirm'
+            rec.vehicle_id.state='Not Available'
+
+    def action_return(self):
+        for rec in self:
+            rec.state='Returned'
+            rec.vehicle_id.state='Available'
 
 class FleetInherit(models.Model):
     _inherit = 'fleet.vehicle'
