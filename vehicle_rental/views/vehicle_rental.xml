@@ -1,0 +1,137 @@
+ <odoo>
+    <data>
+
+        <!-- Vehicles Tree View -->
+
+        <record model="ir.ui.view" id="vehicle_new">
+            <field name="name">vehicle.rental.tree</field>
+            <field name="model">vehicle.rental</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Vehicle tree">
+                    <field name="vehicle_name"/>
+                    <field name="vehicle_id"/>
+                    <field name="brand_id"/>
+                    <field name="state"/>
+                    <field name="model" optional="hide"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="rent" widget='monetary'
+                           options="{'currency_field': 'currency_id'}"
+                           readonly="False" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Vehicles Search and Filter View -->
+
+        <record model="ir.ui.view" id="vehicle_searching">
+            <field name="name">vehicle.rental.search</field>
+            <field name="model">vehicle.rental</field>
+            <field name="arch" type="xml">
+                <search string="Vehicle Search">
+                    <field name="vehicle_name"
+                           filter_domain="[('vehicle_name','ilike',self)]"
+                           string="Vehicle"/>
+                    <field name="brand_id"
+                           filter_domain="[('brand_id','ilike',self)]"
+                           string="Brand"/>
+
+                    <filter name="filter_name_avail" string="Available"
+                            domain="[('state','=','available')]"/>
+                    <filter name="filter_name_notavail" string="Not Available"
+                            domain="[('state','=','not_available')]"/>
+                    <filter string="Model" name="brand_group"
+                            context="{'group_by':'model'}"/>
+                    <filter string="Brand" name="brand_group"
+                            context="{'group_by':'brand_id'}"/>
+                </search>
+            </field>
+
+        </record>
+
+
+        <!-- kanban View -->
+
+        <record id="view_kanban" model="ir.ui.view">
+            <field name="name">vehicle.rental.kanban</field>
+            <field name="model">vehicle.rental</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="vehicle_name"/>
+                    <field name="brand_id"/>
+                    <field name="rent"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div>Vehicle:
+                                    <strong>
+                                        <field name="vehicle_name"/>
+                                    </strong>
+                                </div>
+                                <div>Brand:
+                                    <field name="brand_id"/>
+                                </div>
+                                <div>Rent:
+                                    <field name="rent"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <!-- Form view -->
+
+
+        <record model="ir.ui.view" id="vehicle_search">
+            <field name="name">vehicle.rental.form</field>
+            <field name="model">vehicle.rental</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle create">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="available,not_available"/>
+                    </header>
+                    <sheet>
+                         <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="vehicle_requests"
+                            icon="fa-car"  string="Requests" type="object" widget="statinfo"/>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="vehicle_id"/>
+                                <field name="vehicle_name"/>
+                                <field name="brand_id"/>
+                            </group>
+                            <group>
+                                <field name="model" options="{'datepicker': {'ShowType': 'years''}}"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="rent" widget='monetary'
+                                       options="{'currency_field': 'currency_id'}"
+                                       readonly="False" optional="hide"/>
+                                <field name="registration"/>
+                            </group>
+                        </group>
+                        <notebook>
+                           <page string="Rent Requests">
+                               <field name="request_ids">
+                                   <tree>
+                                        <field name="customer_id"/>
+                                        <field name="request_date"/>
+                                        <field name="vehicle_id"/>
+                                   </tree>
+                               </field>
+                           </page>
+                            <page string="Rent Charges">
+                           </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+     </data>
+</odoo>

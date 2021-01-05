@@ -25,7 +25,8 @@
     'data': [
 
         'views/views.xml',
-        'views/templates.xml',
+        'views/vehicle_rental.xml',
+        'views/rental_request.xml',
         'data/sequence.xml',
         'security/ir.model.access.csv'
 
