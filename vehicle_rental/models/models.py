@@ -11,7 +11,7 @@ class VehicleRental(models.Model):
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle",
                                  domain=[('state_id', '=', 3)],required=True)
-    vehicle_name = fields.Char(string='Name',related='vehicle_id.name')
+    vehicle_name = fields.Char(string='Name',related='vehicle_id.name',store=True)
     brand_id = fields.Many2one(string='Brand', related='vehicle_id.brand_id',
                                readonly=True, store=True)
     registration = fields.Date(string='Registration Date',
@@ -28,9 +28,11 @@ class VehicleRental(models.Model):
 
     request_ids = fields.One2many('rent.request', 'vehicle_id',
                                  string='Confirm Requests')
+    charge_ids = fields.One2many('rent.charges', 'vehicle_id',
+                                  string='Rent Requests')
 
     _sql_constraints = [
-        ('vehicle_name', 'unique (vehicle_name)',
+        ('user_vehicle_name', 'unique (vehicle_name)',
          'Vehicle name already exists!!')]
 
     @api.onchange('registration')

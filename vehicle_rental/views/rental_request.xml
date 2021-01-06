@@ -29,23 +29,33 @@
                                 <field name="request_date"/>
                                 <field name="vehicle_id"/>
                                 <field name="currency_id" invisible="1"/>
-                                <field name="rent_request" widget='monetary'
-                                       options="{'currency_field': 'currency_id'}"
-                                       readonly="False" optional="hide"/>
+
+
                             </group>
                             <group>
                                 <field name="from_date"/>
                                 <field name="to_date"/>
                                 <field name="period" readonly="1" force_save="1"/>
 
+                                <label for="period_type" string="Period Type" />
+                                <div class="address_format">
+                                     <field name="period_type" style="width: 80%"/>
+                                     <field name="unit"  style="width: 20%"/>
+                                </div>
+
+
+                                 <field name="rent_total" widget='monetary'
+                                       options="{'currency_field': 'currency_id'}"
+                                       readonly="False"/>
+
+                                </group>
                             </group>
 
-                        </group>
                     </sheet>
                 </form>
             </field>
         </record>
-
+amount =
 
         <!-- Rental Request Tree View -->
 

@@ -107,7 +107,7 @@
                                 <field name="brand_id"/>
                             </group>
                             <group>
-                                <field name="model" options="{'datepicker': {'ShowType': 'years''}}"/>
+                                <field name="model"/>
                                 <field name="currency_id" invisible="1"/>
                                 <field name="rent" widget='monetary'
                                        options="{'currency_field': 'currency_id'}"
@@ -120,12 +120,22 @@
                                <field name="request_ids">
                                    <tree>
                                         <field name="customer_id"/>
-                                        <field name="request_date"/>
                                         <field name="vehicle_id"/>
+                                        <field name="request_date"/>
+                                        <field name="state"/>
                                    </tree>
                                </field>
                            </page>
                             <page string="Rent Charges">
+                                <field name="charge_ids">
+                                <tree editable="bottom">
+                                    <field name="time"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="amount" widget='monetary'
+                                       options="{'currency_field': 'currency_id'}"
+                                       readonly="False"/>
+                                </tree>
+                                </field>
                            </page>
                         </notebook>
                     </sheet>
