@@ -29,7 +29,8 @@ class VehicleRental(models.Model):
     request_ids = fields.One2many('rent.request', 'vehicle_id',
                                  string='Confirm Requests')
     charge_ids = fields.One2many('rent.charges', 'vehicle_id',
-                                  string='Rent Requests')
+                                  string='Rent Requests',limit=4)
+
 
     _sql_constraints = [
         ('user_vehicle_name', 'unique (vehicle_name)',
@@ -45,11 +46,12 @@ class VehicleRental(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Requests',
-            'view_mode': 'tree',
+            'view_mode': 'tree,form',
             'res_model': 'rent.request',
             'domain': [('vehicle_id', '=', self.id)],
             'context': "{'create': False}"
         }
+
 
 class FleetInherit(models.Model):
     _inherit = 'fleet.vehicle'

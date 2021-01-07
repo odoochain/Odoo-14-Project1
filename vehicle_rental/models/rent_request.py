@@ -15,18 +15,24 @@ class RentRequest(models.Model):
     vehicle_id = fields.Many2one('vehicle.rental', string="Vehicle")
     from_date = fields.Date('From date')
     to_date = fields.Date('To date')
-    period = fields.Char(string='Period')
+    period = fields.Integer(string='Period',default="1")
     period_type = fields.Many2one('rent.charges', string='Period Type')
-    unit = fields.Integer(string='Units',default=1)
+    unit = fields.Integer(string='Units', default=1)
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda
                                       self: self.env.user.company_id.currency_id)
-    rent_request = fields.Monetary(string='Rent', related="vehicle_id.rent")
-    rent_total = fields.Monetary(string="Total Rent" ,compute='compute_rent',
+    rent_request = fields.Monetary(string='Rent')
+    rent_total = fields.Monetary(string="Total Rent", compute='compute_rent',
                                  store=True)
     state = fields.Selection(
         [('draft', 'Draft'), ('confirm', 'Confirm'),
          ('returned', 'Returned')], 'State', default='draft')
+
+    @api.onchange('vehicle_id')
+    def _onchange_vehicle_id(self):
+        for rec in self:
+            return {'domain': {
+                'period_type': [('vehicle_id', '=', rec.vehicle_id.id)]}}
 
     @api.depends('unit')
     def compute_rent(self):
@@ -40,6 +46,7 @@ class RentRequest(models.Model):
                 if rec.from_date < rec.to_date:
                     period_days = (rec.to_date - rec.from_date).days
                     rec.period = period_days + 1
+                    rec.rent_request = rec.period * rec.vehicle_id.rent
 
     @api.model
     def create(self, vals):
@@ -59,7 +66,6 @@ class RentRequest(models.Model):
         for rec in self:
             rec.state = 'confirm'
             rec.vehicle_id.state = 'not_available'
-            # rec.vehicle_id.request_ids = rec.vehicle_id
 
     def action_return(self):
         for rec in self:
@@ -79,5 +85,4 @@ class RequestCharges(models.Model):
     amount = fields.Monetary(string='Amount')
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda
-                                    self: self.env.user.company_id.currency_id)
-
+                                      self: self.env.user.company_id.currency_id)
