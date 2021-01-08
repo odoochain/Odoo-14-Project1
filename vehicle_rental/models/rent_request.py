@@ -7,26 +7,27 @@ from datetime import datetime
 
 class RentRequest(models.Model):
     _name = 'rent.request'
+    _inherit = 'mail.thread'
 
     name = fields.Char(string="Number", readonly=True, required=True,
-                       copy=False, default='New')
+                       copy=False, default='New',track_visibility='always')
     customer_id = fields.Many2one('res.partner', string="Customer Name")
     request_date = fields.Date('Request Date', default=fields.Date.today)
     vehicle_id = fields.Many2one('vehicle.rental', string="Vehicle")
     from_date = fields.Date('From date')
     to_date = fields.Date('To date')
-    period = fields.Integer(string='Period',default="1")
+    period = fields.Integer(string='Period', default="1")
     period_type = fields.Many2one('rent.charges', string='Period Type')
     unit = fields.Integer(string='Units', default=1)
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda
                                       self: self.env.user.company_id.currency_id)
-    rent_request = fields.Monetary(string='Rent')
+    rent_request = fields.Monetary(string='Rent', related='period_type.amount')
     rent_total = fields.Monetary(string="Total Rent", compute='compute_rent',
                                  store=True)
     state = fields.Selection(
         [('draft', 'Draft'), ('confirm', 'Confirm'),
-         ('returned', 'Returned')], 'State', default='draft')
+         ('returned', 'Returned')], string="State", default='draft')
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle_id(self):
@@ -46,7 +47,7 @@ class RentRequest(models.Model):
                 if rec.from_date < rec.to_date:
                     period_days = (rec.to_date - rec.from_date).days
                     rec.period = period_days + 1
-                    rec.rent_request = rec.period * rec.vehicle_id.rent
+                    # rec.rent_request = rec.period * rec.vehicle_id.rent
 
     @api.model
     def create(self, vals):
@@ -60,7 +61,7 @@ class RentRequest(models.Model):
     def date_check(self):
         for rec in self:
             if rec.to_date < rec.from_date:
-                raise ValidationError(('Sorry Date Invalid'))
+                raise ValidationError('Sorry Date Invalid')
 
     def action_confirm(self):
         for rec in self:
@@ -80,9 +81,16 @@ class RequestCharges(models.Model):
     vehicle_id = fields.Many2one('vehicle.rental', string="Vehicle")
     time = fields.Selection(
         [('hour', 'Hour'), ('day', 'Day'),
-         ('week', 'Week'), ('month', 'Month')], 'Time', default='hour')
+         ('week', 'Week'), ('month', 'Month')], string="Time", default='hour')
 
     amount = fields.Monetary(string='Amount')
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda
                                       self: self.env.user.company_id.currency_id)
+
+    @api.constrains('time')
+    def period_check(self):
+        for rec in self and (self.vehicle_id.charge_ids - self):
+            if rec.time == self.time:
+                raise ValidationError("Time period duplicated. Check It!!")
+

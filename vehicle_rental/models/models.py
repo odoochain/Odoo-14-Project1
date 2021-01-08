@@ -10,8 +10,9 @@ class VehicleRental(models.Model):
     _rec_name = 'vehicle_name'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle",
-                                 domain=[('state_id', '=', 3)],required=True)
-    vehicle_name = fields.Char(string='Name',related='vehicle_id.name',store=True)
+                                 domain=[('state_id', '=', 3)], required=True)
+    vehicle_name = fields.Char(string='Name', related='vehicle_id.name',
+                               store=True)
     brand_id = fields.Many2one(string='Brand', related='vehicle_id.brand_id',
                                readonly=True, store=True)
     registration = fields.Date(string='Registration Date',
@@ -21,16 +22,18 @@ class VehicleRental(models.Model):
     rent = fields.Monetary(string='Rent')
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda
-                                    self: self.env.user.company_id.currency_id)
+                                      self: self.env.user.company_id.currency_id)
     state = fields.Selection(
         [('available', 'Available'), ('not_available', 'Not Available'),
-         ('sold', 'Sold')], 'Status', default='available')
+         ('sold', 'Sold')], string="Status", default='available')
 
     request_ids = fields.One2many('rent.request', 'vehicle_id',
-                                 string='Confirm Requests')
-    charge_ids = fields.One2many('rent.charges', 'vehicle_id',
-                                  string='Rent Requests',limit=4)
+                                  string='Confirm Requests',
+                                  domain=lambda self: [
+                                      ('state', '!=', 'draft')])
 
+    charge_ids = fields.One2many('rent.charges', 'vehicle_id',
+                                 string='Rent Requests', limit=4)
 
     _sql_constraints = [
         ('user_vehicle_name', 'unique (vehicle_name)',
