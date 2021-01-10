@@ -51,7 +51,6 @@
 
                                 </group>
                             </group>
-
                     </sheet>
                     <div class="oe_chatter">
          <field name="message_follower_ids" widget="mail_followers"/>
@@ -68,7 +67,7 @@
             <field name="model">rent.request</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Vehicle tree">
+                <tree string="Vehicle tree" decoration-warning="warning == True" decoration-danger="late == True">
                     <field name="name"/>
                     <field name="customer_id"/>
                     <field name="vehicle_id"/>
@@ -81,10 +80,12 @@
                     <field name="rent_request" widget='monetary'
                            options="{'currency_field': 'currency_id'}"
                            readonly="False" optional="hide"/>
-
+                    <field name="warning" invisible="1"/>
+                    <field name="late" invisible="1"/>
                 </tree>
             </field>
         </record>
+
 
          <!-- Rental Request kanban View -->
 

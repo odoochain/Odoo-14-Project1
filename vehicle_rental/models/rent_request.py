@@ -10,7 +10,7 @@ class RentRequest(models.Model):
     _inherit = 'mail.thread'
 
     name = fields.Char(string="Number", readonly=True, required=True,
-                       copy=False, default='New',track_visibility='always')
+                       copy=False, default='New', track_visibility='always')
     customer_id = fields.Many2one('res.partner', string="Customer Name")
     request_date = fields.Date('Request Date', default=fields.Date.today)
     vehicle_id = fields.Many2one('vehicle.rental', string="Vehicle")
@@ -28,6 +28,21 @@ class RentRequest(models.Model):
     state = fields.Selection(
         [('draft', 'Draft'), ('confirm', 'Confirm'),
          ('returned', 'Returned')], string="State", default='draft')
+    warning = fields.Boolean(string='Warning', default=False,
+                             compute="_compute_warning")
+    late = fields.Boolean(string='Late', default=False,
+                          _compute="_compute_late")
+
+    def _compute_warning(self):
+        # today = fields.Date.today()
+        for rec in self:
+            rec.warning = rec.state == 'confirm' and (rec.to_date-fields.Date.today).days == 2
+
+    def _compute_late(self):
+        # today = fields.Date.today()
+        for rec in self:
+            rec.late = rec.state == 'confirm' and (rec.to_date
+                                                   > fields.Date.today)
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle_id(self):
@@ -93,4 +108,3 @@ class RequestCharges(models.Model):
         for rec in self and (self.vehicle_id.charge_ids - self):
             if rec.time == self.time:
                 raise ValidationError("Time period duplicated. Check It!!")
-
