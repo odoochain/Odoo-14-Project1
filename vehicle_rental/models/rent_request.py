@@ -31,18 +31,17 @@ class RentRequest(models.Model):
     warning = fields.Boolean(string='Warning', default=False,
                              compute="_compute_warning")
     late = fields.Boolean(string='Late', default=False,
-                          _compute="_compute_late")
+                          compute="_compute_late")
 
     def _compute_warning(self):
-        # today = fields.Date.today()
+        today = fields.Date.today()
         for rec in self:
-            rec.warning = rec.state == 'confirm' and (rec.to_date-fields.Date.today).days == 2
+            rec.warning = rec.state == 'confirm' and rec.to_date and (rec.to_date - today).days == 2
 
     def _compute_late(self):
-        # today = fields.Date.today()
+        today = fields.Date.today()
         for rec in self:
-            rec.late = rec.state == 'confirm' and (rec.to_date
-                                                   > fields.Date.today)
+            rec.late = rec.state == 'confirm' and rec.to_date and rec.to_date < today
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle_id(self):
