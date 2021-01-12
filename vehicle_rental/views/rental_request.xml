@@ -10,9 +10,9 @@
                 <form string="Vehicle request">
 
                     <header>
-                       <button name="action_confirm" string="Confirm"   class="oe_highlight" type="object" states="draft" />
+                       <button name="action_confirm" string="Confirm"   class="oe_highlight" type="object" states="draft" groups="vehicle_rental.group_vehicle_manager" />
                         <button name="action_return" string="Return" class="oe_highlight" type="object" states="confirm"  />
-                        <button name="action_invoice" string="Invoice" class="oe_highlight"  states="confirm"  />
+                        <button name="action_invoice" string="Invoice" class="oe_highlight" states="confirm"  />
 
                         <field name="state" widget="statusbar"/>
                     </header>
@@ -76,7 +76,7 @@
                     <field name="from_date" optional="hide"/>
                     <field name="to_date" optional="hide"/>
                     <field name="currency_id" invisible="1"/>
-                    <field name="period"/>
+                    <field name="period" optional="hide"/>
                     <field name="state" optional="hide"/>
                     <field name="rent_request" widget='monetary'
                            options="{'currency_field': 'currency_id'}"

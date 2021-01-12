@@ -36,7 +36,8 @@ class RentRequest(models.Model):
     def _compute_warning(self):
         today = fields.Date.today()
         for rec in self:
-            rec.warning = rec.state == 'confirm' and rec.to_date and (rec.to_date - today).days == 2
+            rec.warning = rec.state == 'confirm' and rec.to_date and (
+                        rec.to_date - today).days == 2
 
     def _compute_late(self):
         today = fields.Date.today()
@@ -87,6 +88,20 @@ class RentRequest(models.Model):
             rec.state = 'returned'
             rec.vehicle_id.state = 'available'
 
+    def action_invoice(self):
+        invoice = self.env['account.move'].create({
+            'move_type': 'out_invoice',
+            'invoice_date': fields.Date.today(),
+            'date': self.to_date,
+            'partner_id': self.customer_id.id,
+            'currency_id': self.currency.id,
+            'invoice_line_ids': [(0, 0, {
+                'name': self.vehicle_id.name,
+                'price_unit': self.rent_total,
+
+            })],
+        })
+
 
 class RequestCharges(models.Model):
     _name = 'rent.charges'
@@ -104,6 +119,6 @@ class RequestCharges(models.Model):
 
     @api.constrains('time')
     def period_check(self):
-        for rec in self and (self.vehicle_id.charge_ids - self):
+        for rec in self.vehicle_id.charge_ids - self:
             if rec.time == self.time:
-                raise ValidationError("Time period duplicated. Check It!!")
+                raise ValidationError("Time period duplicated")

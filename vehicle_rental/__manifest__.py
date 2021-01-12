@@ -28,7 +28,9 @@
         'views/vehicle_rental.xml',
         'views/rental_request.xml',
         'data/sequence.xml',
-        'security/ir.model.access.csv'
+        'security/security.xml',
+        'security/ir.model.access.csv',
+
 
     ],
     # only loaded in demonstration mode
