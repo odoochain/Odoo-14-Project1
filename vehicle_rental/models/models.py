@@ -44,6 +44,16 @@ class VehicleRental(models.Model):
         if self.registration:
             self.model = self.registration.strftime("%Y")
 
+
+    @api.constrains('charge_ids')
+    def period_check(self):
+        for rec in self:
+            list = []
+            for l in rec.charge_ids:
+                if l.time in list:
+                    raise ValidationError("Time period duplicated! Check Properly")
+                list.append(l.time)
+
     def vehicle_requests(self):
         self.ensure_one()
         return {
