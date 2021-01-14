@@ -19,6 +19,11 @@
                     <sheet>
                          <widget name="web_ribbon" title="Paid" bg_color="bg-success" attrs="{'invisible': [('state', '!=','invoiced')]}"/>
 
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="action_invoice"
+                            icon="fa-edit"  string="Invoicing"  widget="statinfo" type="object"  attrs="{'invisible': ['|',('state', '=','draft'), ('state', '=','invoiced')]}"/>
+                        </div>
+
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>

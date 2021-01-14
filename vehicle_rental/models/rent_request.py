@@ -23,12 +23,12 @@ class RentRequest(models.Model):
     unit = fields.Float(string='Units', default=1)
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda
-                                  self: self.env.user.company_id.currency_id)
+                                      self: self.env.user.company_id.currency_id)
     rent_request = fields.Monetary(string='Rent', related='period_type.amount')
     rent_total = fields.Monetary(string="Total Rent", compute='compute_rent',
                                  store=True)
     state = fields.Selection(
-        [('draft', 'Draft'), ('confirm', 'Confirm'),('invoiced', 'Invoiced'),
+        [('draft', 'Draft'), ('confirm', 'Confirm'), ('invoiced', 'Invoiced'),
          ('returned', 'Returned')], string="State", default='draft')
     warning = fields.Boolean(string='Warning', default=False,
                              compute="_compute_warning")
@@ -39,7 +39,7 @@ class RentRequest(models.Model):
         today = fields.Date.today()
         for rec in self:
             rec.warning = rec.state == 'confirm' and rec.to_date and (
-                        rec.to_date - today).days == 2
+                    rec.to_date - today).days == 2
 
     def _compute_late(self):
         today = fields.Date.today()
@@ -52,7 +52,7 @@ class RentRequest(models.Model):
             return {'domain': {
                 'period_type': [('vehicle_id', '=', self.vehicle_id.id)]}}
 
-    @api.depends('unit','period_type')
+    @api.depends('unit', 'period_type')
     def compute_rent(self):
         self.write(
             {'rent_total': self.period_type.amount * self.unit})
@@ -87,7 +87,6 @@ class RentRequest(models.Model):
             rec.vehicle_id.state = 'available'
 
     def action_invoice(self):
-
         invoice = self.env['account.move'].create({
             'move_type': 'out_invoice',
             'invoice_date': fields.Date.today(),
@@ -102,6 +101,7 @@ class RentRequest(models.Model):
         })
         for rec in self:
             rec.state = 'invoiced'
+
         return {'type': 'ir.actions.act_window',
                 'res_model': 'account.move',
                 'view_mode': 'form',
@@ -122,10 +122,4 @@ class RequestCharges(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda
                                       self: self.env.user.company_id.currency_id)
-
-    # @api.constrains('time')
-    # def period_check(self):
-    #     for rec in self.vehicle_id.charge_ids - self:
-    #         if rec.time == self.time:
-    #             raise ValidationError("Time period duplicated")
 

@@ -51,7 +51,7 @@ class VehicleRental(models.Model):
             list = []
             for l in rec.charge_ids:
                 if l.time in list:
-                    raise ValidationError("Time period duplicated! Check Properly")
+                    raise ValidationError("Time period duplicated! Check Properly!!")
                 list.append(l.time)
 
     def vehicle_requests(self):
@@ -64,7 +64,6 @@ class VehicleRental(models.Model):
             'domain': [('vehicle_id', '=', self.id)],
             'context': "{'create': False}"
         }
-
 
 class FleetInherit(models.Model):
     _inherit = 'fleet.vehicle'
