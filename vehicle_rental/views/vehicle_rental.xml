@@ -1,4 +1,4 @@
- <odoo>
+<odoo>
     <data>
 
         <!-- Vehicles Tree View -->
@@ -91,12 +91,15 @@
             <field name="arch" type="xml">
                 <form string="Vehicle create">
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="available,not_available"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="available,not_available"/>
                     </header>
                     <sheet>
-                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" name="vehicle_requests"
-                            icon="fa-car"  string="Requests" type="object" widget="statinfo"/>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button"
+                                    name="vehicle_requests"
+                                    icon="fa-car" string="Requests"
+                                    type="object" widget="statinfo"/>
                         </div>
                         <group>
                             <group>
@@ -114,32 +117,33 @@
                             </group>
                         </group>
                         <notebook>
-                           <page string="Rent Requests">
-                               <field name="request_ids">
-                                   <tree create="false">
+                            <page string="Rent Requests">
+                                <field name="request_ids">
+                                    <tree create="false">
                                         <field name="customer_id"/>
                                         <field name="vehicle_id"/>
                                         <field name="request_date"/>
                                         <field name="state"/>
-                                   </tree>
-                               </field>
-                           </page>
+                                    </tree>
+                                </field>
+                            </page>
                             <page string="Rent Charges">
                                 <field name="charge_ids">
-                                <tree editable="bottom">
-                                    <field name="time"/>
-                                    <field name="currency_id" invisible="1"/>
-                                    <field name="amount" widget='monetary'
-                                       options="{'currency_field': 'currency_id'}"
-                                       readonly="False"/>
-                                </tree>
+                                    <tree editable="bottom">
+                                        <field name="time"/>
+                                        <field name="currency_id"
+                                               invisible="1"/>
+                                        <field name="amount" widget='monetary'
+                                           options="{'currency_field': 'currency_id'}"
+                                               readonly="False"/>
+                                    </tree>
                                 </field>
-                           </page>
+                            </page>
                         </notebook>
                     </sheet>
                 </form>
             </field>
         </record>
 
-     </data>
+    </data>
 </odoo>

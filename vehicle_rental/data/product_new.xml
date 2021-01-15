@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Creating a new product for Vehicle rental -->
+        <record model="product.product" id="product_vehicle_request" >
+         <field name="name">Rental Service</field>
+         <field name="type">service</field>
+        </record>
+
+
+    </data>
+</odoo>

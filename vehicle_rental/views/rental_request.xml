@@ -1,7 +1,7 @@
- <odoo>
+<odoo>
     <data>
 
-<!-- Request rental Form view -->
+        <!-- Request rental Form view -->
         <record model="ir.ui.view" id="rental_request_form">
             <field name="name">vehicle.request.form</field>
             <field name="model">rent.request</field>
@@ -10,20 +10,31 @@
                 <form string="Vehicle request">
 
                     <header>
-                       <button name="action_confirm" string="Confirm"   class="oe_highlight" type="object" states="draft" groups="vehicle_rental.group_vehicle_manager" />
-                        <button name="action_return" string="Return" class="oe_highlight" type="object" states="confirm"  />
-                        <button name="action_invoice" string="Invoice" class="oe_highlight" type="object" states="confirm"  />
+                        <button name="action_confirm" string="Confirm"
+                                class="oe_highlight" type="object"
+                                states="draft"
+                                groups="vehicle_rental.group_vehicle_manager"/>
+                        <button name="action_return" string="Return"
+                                class="oe_highlight" type="object"
+                                states="confirm"/>
+                        <button name="action_invoice" string="Create Invoice"
+                                class="oe_highlight" type="object"
+                                states="confirm"/>
 
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
-                         <widget name="web_ribbon" title="Paid" bg_color="bg-success" attrs="{'invisible': [('state', '!=','invoiced')]}"/>
 
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" name="action_invoice"
-                            icon="fa-edit"  string="Invoicing"  widget="statinfo" type="object"  attrs="{'invisible': ['|',('state', '=','draft'), ('state', '=','invoiced')]}"/>
+                            <button class="oe_stat_button"
+                                    name="action_invoice_smart"
+                                    icon="fa-edit" string="Invoicing"
+                                    widget="statinfo" type="object"
+                                    states="invoiced"/>
                         </div>
-
+                        <widget name="web_ribbon" title="Paid"
+                                bg_color="bg-success"
+                                attrs="{'invisible': [('is_paid', '=', False)]}"/>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>
@@ -31,8 +42,10 @@
                         </div>
                         <group>
                             <group>
-                                <field name="customer_id" widget="res_partner_many2one" context="{'res_partner_search_mode':
-                                'customer', 'show_address': 1, 'show_vat':True}" options='{"always_reload":True}'/>
+                                <field name="customer_id"
+                                       widget="res_partner_many2one" context="{'res_partner_search_mode':
+                                'customer', 'show_address': 1, 'show_vat':True}"
+                                       options='{"always_reload":True}'/>
                                 <field name="request_date"/>
                                 <field name="vehicle_id"/>
                                 <field name="currency_id" invisible="1"/>
@@ -42,27 +55,31 @@
                             <group>
                                 <field name="from_date"/>
                                 <field name="to_date"/>
-                                <field name="period" readonly="1" force_save="1"/>
+                                <field name="period" readonly="1"
+                                       force_save="1"/>
                                 <field name="rent_request" widget='monetary'
                                        options="{'currency_field': 'currency_id'}"
                                        readonly="False"/>
 
-                                <label for="period_type" string="Period Type" />
+                                <label for="period_type" string="Period Type"/>
                                 <div class="address_format">
-                                     <field name="unit"  style="width: 20%"/>
-                                    <field name="period_type" style="width: 80%"/>
+                                    <field name="unit" style="width: 20%"/>
+                                    <field name="period_type"
+                                           style="width: 80%"/>
                                 </div>
-                                 <field name="rent_total" widget='monetary'
+                                <field name="rent_total" widget='monetary'
                                        options="{'currency_field': 'currency_id'}"
                                        readonly="False"/>
-
-                                </group>
+                                <field name="invoice_id" invisible="1"/>
+                                <field name="is_paid" invisible="1"/>
                             </group>
+                        </group>
                     </sheet>
                     <div class="oe_chatter">
-         <field name="message_follower_ids" widget="mail_followers"/>
-         <field name="message_ids" widget="mail_thread"/>
-        </div>
+                        <field name="message_follower_ids"
+                               widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -74,7 +91,9 @@
             <field name="model">rent.request</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree decoration-danger="late == True" decoration-warning="warning == True"  string="Vehicle tree" >
+                <tree decoration-danger="late == True"
+                      decoration-warning="warning == True"
+                      string="Vehicle tree">
                     <field name="name"/>
                     <field name="customer_id"/>
                     <field name="vehicle_id"/>
@@ -94,9 +113,9 @@
         </record>
 
 
-         <!-- Rental Request kanban View -->
+        <!-- Rental Request kanban View -->
 
-        <record id="view_kanban_vehicle_request" model="ir.ui.view">
+        <record id="view_kanban_rental_request" model="ir.ui.view">
             <field name="name">vehicle.request.kanban</field>
             <field name="model">rent.request</field>
             <field name="arch" type="xml">
@@ -123,6 +142,34 @@
                     </templates>
                 </kanban>
             </field>
+        </record>
+
+
+        <!-- Rental Request Search and Filter View -->
+
+        <record model="ir.ui.view" id="rental_request_search">
+            <field name="name">vehicle.request.search</field>
+            <field name="model">rent.request</field>
+            <field name="arch" type="xml">
+                <search string="Rent Request Search">
+                    <field name="vehicle_id"
+                           filter_domain="[('vehicle_id','ilike',self)]"
+                           string="Vehicle"/>
+                    <field name="customer_id"
+                           filter_domain="[('customer_id','ilike',self)]"
+                           string="Customer"/>
+
+                    <filter name="filter_name_avail" string="Invoiced"
+                            domain="[('state','=','invoiced')]"/>
+                    <filter name="filter_name_notavail" string="Confirmed"
+                            domain="[('state','=','confirm')]"/>
+                    <filter string="Customer" name="brand_group"
+                            context="{'group_by':'customer_id'}"/>
+                    <filter string="Vehicle" name="brand_group"
+                            context="{'group_by':'vehicle_id'}"/>
+                </search>
+            </field>
+
         </record>
     </data>
 </odoo>

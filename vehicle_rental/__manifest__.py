@@ -28,6 +28,7 @@
         'views/vehicle_rental.xml',
         'views/rental_request.xml',
         'data/sequence.xml',
+        'data/product_new.xml',
         'security/security.xml',
         'security/ir.model.access.csv',
 

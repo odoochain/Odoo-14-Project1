@@ -41,12 +41,14 @@ class VehicleRental(models.Model):
 
     @api.onchange('registration')
     def _onchange_registration(self):
+        """ Getting model year """
         if self.registration:
             self.model = self.registration.strftime("%Y")
 
 
     @api.constrains('charge_ids')
     def period_check(self):
+        """ Validation of period types """
         for rec in self:
             list = []
             for l in rec.charge_ids:
@@ -55,6 +57,7 @@ class VehicleRental(models.Model):
                 list.append(l.time)
 
     def vehicle_requests(self):
+        """ Vehicle request smart button """
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
