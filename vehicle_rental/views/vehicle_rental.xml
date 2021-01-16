@@ -110,10 +110,10 @@
                             <group>
                                 <field name="model"/>
                                 <field name="currency_id" invisible="1"/>
+                                <field name="registration"/>
                                 <field name="rent" widget='monetary'
                                        options="{'currency_field': 'currency_id'}"
                                        readonly="False" optional="hide"/>
-                                <field name="registration"/>
                             </group>
                         </group>
                         <notebook>

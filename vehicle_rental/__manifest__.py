@@ -9,35 +9,30 @@
         The app used for renting the vehicle based on user request.
     """,
 
-    'author': "Sonu Soman",
+    'author': "Sonu Soman KP",
     'website': "http://www.cybrosys.com",
 
     # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
     'category': 'Uncategorized',
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','fleet'],
+    'depends': ['base','fleet','account','mail'],
 
     # always loaded
     'data': [
 
+        'security/security.xml',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'views/vehicle_rental.xml',
         'views/rental_request.xml',
         'data/sequence.xml',
         'data/product_new.xml',
-        'security/security.xml',
-        'security/ir.model.access.csv',
-
-
-
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
-'images': ['static/description/icon.png'],
+    
+    'images': ['static/description/icon.png'],
+    'installable': True,
+    'auto_install': False
+
 }

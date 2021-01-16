@@ -16,12 +16,12 @@
                                 groups="vehicle_rental.group_vehicle_manager"/>
                         <button name="action_return" string="Return"
                                 class="oe_highlight" type="object"
-                                states="confirm"/>
+                                states="invoiced" />
                         <button name="action_invoice" string="Create Invoice"
                                 class="oe_highlight" type="object"
                                 states="confirm"/>
 
-                        <field name="state" widget="statusbar"/>
+                        <field name="state" widget="statusbar" statusbar_visible="confirm,invoiced"/>
                     </header>
                     <sheet>
 
@@ -30,14 +30,14 @@
                                     name="action_invoice_smart"
                                     icon="fa-edit" string="Invoicing"
                                     widget="statinfo" type="object"
-                                    states="invoiced"/>
+                                    states="invoiced,returned"/>
                         </div>
                         <widget name="web_ribbon" title="Paid"
                                 bg_color="bg-success"
                                 attrs="{'invisible': [('is_paid', '=', False)]}"/>
                         <div class="oe_title">
                             <h1>
-                                <field name="name" readonly="1"/>
+                                <field name="sequence" readonly="1"/>
                             </h1>
                         </div>
                         <group>
@@ -49,7 +49,9 @@
                                 <field name="request_date"/>
                                 <field name="vehicle_id"/>
                                 <field name="currency_id" invisible="1"/>
-
+                                <field name="rent_request" widget='monetary'
+                                       options="{'currency_field': 'currency_id'}"
+                                       readonly="False"/>
 
                             </group>
                             <group>
@@ -57,9 +59,7 @@
                                 <field name="to_date"/>
                                 <field name="period" readonly="1"
                                        force_save="1"/>
-                                <field name="rent_request" widget='monetary'
-                                       options="{'currency_field': 'currency_id'}"
-                                       readonly="False"/>
+
 
                                 <label for="period_type" string="Period Type"/>
                                 <div class="address_format">
@@ -94,7 +94,7 @@
                 <tree decoration-danger="late == True"
                       decoration-warning="warning == True"
                       string="Vehicle tree">
-                    <field name="name"/>
+                    <field name="sequence"/>
                     <field name="customer_id"/>
                     <field name="vehicle_id"/>
                     <field name="request_date"/>

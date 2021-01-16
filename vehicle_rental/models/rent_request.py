@@ -6,15 +6,18 @@ from odoo.exceptions import ValidationError
 
 class RentRequest(models.Model):
     _name = 'rent.request'
+    _description = 'Rent Request'
     _inherit = 'mail.thread'
+    _rec_name = 'sequence'
 
-    name = fields.Char(string="Number", readonly=True, required=True,
-                       copy=False, default='New', track_visibility='always')
+    sequence = fields.Char(string="Number", readonly=True, required=True,
+                       copy=False, default='New')
     customer_id = fields.Many2one('res.partner', string="Customer Name",
                                   track_visibility='always')
     request_date = fields.Date('Request Date', default=fields.Date.today)
     vehicle_id = fields.Many2one('vehicle.rental', string="Vehicle",
-                                 track_visibility='always')
+                                 track_visibility='always',domain=[(
+                                 'state', '=', 'available')])
     from_date = fields.Date('From date')
     to_date = fields.Date('To date')
     period = fields.Integer(string='Period', default=1)
@@ -24,11 +27,11 @@ class RentRequest(models.Model):
                                   default=lambda
                                       self: self.env.user.company_id.currency_id)
     rent_request = fields.Monetary(string='Rent', related='period_type.amount')
-    rent_total = fields.Monetary(string="Total Rent", compute='compute_rent',
+    rent_total = fields.Monetary(string="Total Rent", compute='_compute_rent',
                                  store=True)
     state = fields.Selection(
         [('draft', 'Draft'), ('confirm', 'Confirm'), ('invoiced', 'Invoiced'),
-         ('returned', 'Returned')], string="State", default='draft')
+         ('returned', 'Returned')], string="State", default='draft',track_visibility='always')
     warning = fields.Boolean(string='Warning', default=False,
                              compute="_compute_warning")
     late = fields.Boolean(string='Late', default=False,
@@ -42,7 +45,7 @@ class RentRequest(models.Model):
         today = fields.Date.today()
         for rec in self:
             rec.warning = rec.state == 'confirm' and rec.to_date and (
-                    rec.to_date - today).days == 2
+                    rec.to_date - today).days <= 2
 
     def _compute_late(self):
         """ compute late """
@@ -64,7 +67,7 @@ class RentRequest(models.Model):
                 'period_type': [('vehicle_id', '=', rec.vehicle_id.id)]}}
 
     @api.depends('unit', 'period_type')
-    def compute_rent(self):
+    def _compute_rent(self):
         """ compute quantity of period type """
         self.write(
             {'rent_total': self.period_type.amount * self.unit})
@@ -79,8 +82,8 @@ class RentRequest(models.Model):
     @api.model
     def create(self, vals):
         """ Sequence number generation """
-        if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code(
+        if vals.get('sequence', 'New') == 'New':
+            vals['sequence'] = self.env['ir.sequence'].next_by_code(
                 'vehicle.rental.sequence') or 'New'
         result = super(RentRequest, self).create(vals)
         return result
@@ -142,6 +145,7 @@ class RentRequest(models.Model):
 
 class RequestCharges(models.Model):
     _name = 'rent.charges'
+    _description = 'Request Charges'
     _rec_name = 'time'
 
     vehicle_id = fields.Many2one('vehicle.rental', string="Vehicle")

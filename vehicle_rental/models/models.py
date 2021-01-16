@@ -7,6 +7,7 @@ from datetime import datetime
 
 class VehicleRental(models.Model):
     _name = 'vehicle.rental'
+    _description = 'Vehicle Rental'
     _rec_name = 'vehicle_name'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle",
@@ -22,7 +23,7 @@ class VehicleRental(models.Model):
     rent = fields.Monetary(string='Rent')
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda
-                                      self: self.env.user.company_id.currency_id)
+                                  self: self.env.user.company_id.currency_id)
     state = fields.Selection(
         [('available', 'Available'), ('not_available', 'Not Available'),
          ('sold', 'Sold')], string="Status", default='available')
@@ -53,7 +54,8 @@ class VehicleRental(models.Model):
             list = []
             for l in rec.charge_ids:
                 if l.time in list:
-                    raise ValidationError("Time period duplicated! Check Properly!!")
+                    raise ValidationError(
+                        "Time period duplicated! Check Properly!!")
                 list.append(l.time)
 
     def vehicle_requests(self):
@@ -70,5 +72,6 @@ class VehicleRental(models.Model):
 
 class FleetInherit(models.Model):
     _inherit = 'fleet.vehicle'
+
 
     registration_date = fields.Date('Registration Date ', required=False)
