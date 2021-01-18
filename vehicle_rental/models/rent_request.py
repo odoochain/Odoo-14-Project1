@@ -2,6 +2,7 @@
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from datetime import datetime
 
 
 class RentRequest(models.Model):
@@ -42,17 +43,15 @@ class RentRequest(models.Model):
 
     def _compute_warning(self):
         """ compute warning """
-        today = fields.Date.today()
         for rec in self:
             rec.warning = rec.state == 'confirm' and rec.to_date and (
-                    rec.to_date - today).days <= 2
+                    rec.to_date - fields.Date.today()).days <= 2
 
     def _compute_late(self):
         """ compute late """
-        today = fields.Date.today()
         for rec in self:
             rec.late = rec.state == 'confirm' and rec.to_date and (
-                    rec.to_date < today)
+                    rec.to_date < fields.Date.today())
 
     def _compute_paid(self):
         """ checking paid status of invoice """

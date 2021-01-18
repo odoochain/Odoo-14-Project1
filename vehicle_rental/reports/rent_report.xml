@@ -1,0 +1,10 @@
+<odoo>
+
+    <report id="print_report_pdf'"
+        	string="Rental report"
+        	model="rent.request"
+        	report_type="qweb-pdf"
+        	name="vehicle_rental.rental_report"
+        	file="vehicle_rental.rental_report"/>
+
+</odoo>

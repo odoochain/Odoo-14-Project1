@@ -29,6 +29,7 @@
         'views/rental_request.xml',
         'data/sequence.xml',
         'data/product_new.xml',
+        'reports/rent_report.xml',
     ],
     
     'images': ['static/description/icon.png'],
