@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <template id="rental_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h1 align="center">Rental Report</h1>
+                        <t t-forech="docs" t-as="line">
+                            <h3>
+                                <t t-esc="line['name']"/>
+                            </h3>
+                            <h3>
+                                <t t-esc="date_today"/>
+                            </h3>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

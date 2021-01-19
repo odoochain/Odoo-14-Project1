@@ -2,6 +2,8 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_vehicle_rental_manager,vehicle_rental.vehicle_rental_manager,model_vehicle_rental,group_vehicle_manager,1,1,1,1
 access_rent_request_manager,rent_request.rent_request_manager,model_rent_request,group_vehicle_manager,1,1,1,1
 access_rent_charges_manager,rent_charges.rent_charges_manager,model_rent_charges,group_vehicle_manager,1,1,1,1
+access_rental_wizard_manager,rental_wizard.rental_wizard_manager,model_rental_report,group_vehicle_manager,1,1,1,1
 access_vehicle_rental_user,vehicle_rental.vehicle_rental_user,model_vehicle_rental,group_vehicle_user,1,0,0,0
 access_rent_request_user,rent_request.rent_request_user,model_rent_request,group_vehicle_user,1,1,1,0
 access_rent_charges_user,rent_charges.rent_charges_user,model_rent_charges,group_vehicle_user,1,0,0,0
+access_rental_wizard_user,rental_wizard.rental_wizard_user,model_rental_report,group_vehicle_user,1,0,0,0

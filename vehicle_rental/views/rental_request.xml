@@ -21,6 +21,7 @@
                                 class="oe_highlight" type="object"
                                 states="confirm"/>
 
+
                         <field name="state" widget="statusbar" statusbar_visible="confirm,invoiced"/>
                     </header>
                     <sheet>

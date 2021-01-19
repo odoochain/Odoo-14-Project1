@@ -24,12 +24,16 @@
 
         'security/security.xml',
         'security/ir.model.access.csv',
+        'wizard/report_wizard_view.xml',
         'views/views.xml',
         'views/vehicle_rental.xml',
         'views/rental_request.xml',
         'data/sequence.xml',
         'data/product_new.xml',
         'reports/rent_report.xml',
+        'reports/report_template.xml',
+
+
     ],
     
     'images': ['static/description/icon.png'],

@@ -30,7 +30,7 @@
             </field>
         </record>
 
-         <!--       actions Rent Request -->
+        <!--       actions Rent Request -->
 
         <record model="ir.actions.act_window"
                 id="vehicle_rental.action_window_request">
@@ -44,14 +44,26 @@
             </field>
         </record>
 
-<!--  Top menu item  -->
-<menuitem name="Vehicle Rental" id="vehicle_rental.menu_root"/>
-<!--  menu categories  -->
-<menuitem name="Vehicles" id="vehicle_rental.menu_vehicle" parent="vehicle_rental.menu_root"/>
-<!--  actions  -->
-<menuitem name="Vehicle Rental" id="vehicle_rental.menu_vehicle_rental" parent="vehicle_rental.menu_vehicle" action="vehicle_rental.action_window"/>
+        <!--  Top menu item  -->
+        <menuitem name="Vehicle Rental" id="vehicle_rental.menu_root"/>
+        <!--  menu categories  -->
+        <menuitem name="Vehicles" id="vehicle_rental.menu_vehicle"
+                  parent="vehicle_rental.menu_root"/>
 
-<menuitem name="Rental Request" id="vehicle_rental.menu_vehicle_rental_request" parent="vehicle_rental.menu_vehicle" action="vehicle_rental.action_window_request"/>
+        <menuitem name="Reporting" id="vehicle_rental.menu_vehicle_reporting"
+                  parent="vehicle_rental.menu_root" action="vehicle_rental.action_window_report"/>
+        <!--  actions  -->
+        <menuitem name="Vehicle Rental" id="vehicle_rental.menu_vehicle_rental"
+                  parent="vehicle_rental.menu_vehicle"
+                  action="vehicle_rental.action_window"/>
 
+        <menuitem name="Rental Request"
+                  id="vehicle_rental.menu_vehicle_rental_request"
+                  parent="vehicle_rental.menu_vehicle"/>
+
+        <menuitem name="Report"
+                  id="vehicle_rental.menu_report_wizard"
+                  parent="vehicle_rental.menu_vehicle_reporting"
+                  action="vehicle_rental.action_window_report"/>
     </data>
 </odoo>
