@@ -2,7 +2,7 @@
     <data>
         <record id="create_report_form" model="ir.ui.view">
             <field name="name">rental.wizard.wizard</field>
-            <field name="model">rental.report</field>
+            <field name="model">report.vehicle_rental.rental_report</field>
             <field name="arch" type="xml">
                 <form string="Report Form">
                     <group>
@@ -26,7 +26,7 @@
         <record id="vehicle_rental.action_window_report" model="ir.actions.act_window">
             <field name="name">Rent Report</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">rental.report</field>
+            <field name="res_model">report.vehicle_rental.rental_report</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="create_report_form"/>
             <field name="target">new</field>

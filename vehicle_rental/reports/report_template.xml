@@ -1,21 +1,44 @@
 <odoo>
-    <data>
-        <template id="rental_report">
-            <t t-call="web.html_container">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <h1 align="center">Rental Report</h1>
-                        <t t-forech="docs" t-as="line">
-                            <h3>
-                                <t t-esc="line['name']"/>
-                            </h3>
-                            <h3>
-                                <t t-esc="date_today"/>
-                            </h3>
-                        </t>
-                    </div>
-                </t>
+
+    <template id="rental_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+
+
+                <div class="page">
+                    <center>
+                        <h2>Vehicle Rent Report</h2>
+                    </center>
+                    <h6>Date:
+                        <span t-esc="date_today"/>
+                    </h6>
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <td>Sl no</td>
+                            <td>Customer name</td>
+                            <td>Vehicle Name</td>
+                            <td>From Date</td>
+                            <td>To Date</td>
+                            <td>State</td>
+
+                        </tr>
+                  <t t-foreach="docs" t-as="o">
+                        <tr>
+                            <td><t t-esc="o['sequence']"/></td>
+                            <td> <t t-esc="o['name']"/></td>
+                            <td> <t t-esc="o['vehicle_id']"/></td>
+                            <td> <t t-esc="o['from_date']"/></td>
+                            <td> <t t-esc="o['to_date']"/></td>
+                            <td> <t t-esc="o['state']"/></td>
+                        </tr>
+
+
+                    </t>
+                    </table>
+                </div>
             </t>
-        </template>
-    </data>
+        </t>
+    </template>
+
 </odoo>

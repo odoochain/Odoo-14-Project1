@@ -1,6 +1,6 @@
 <odoo>
 
-    <report id="print_report_pdf'"
+    <report id="print_report_pdf"
         	string="Rental report"
         	model="rent.request"
         	report_type="qweb-pdf"
