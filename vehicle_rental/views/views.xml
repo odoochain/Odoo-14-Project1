@@ -59,7 +59,8 @@
 
         <menuitem name="Rental Request"
                   id="vehicle_rental.menu_vehicle_rental_request"
-                  parent="vehicle_rental.menu_vehicle"/>
+                  parent="vehicle_rental.menu_vehicle"
+                  action="vehicle_rental.action_window_request"/>
 
         <menuitem name="Report"
                   id="vehicle_rental.menu_report_wizard"

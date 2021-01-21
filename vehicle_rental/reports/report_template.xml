@@ -12,6 +12,9 @@
                     <h6>Date:
                         <span t-esc="date_today"/>
                     </h6>
+                    <h6>Date:
+                        <span t-esc="vehicle_id"/>
+                    </h6>
                     <table class="table table-bordered">
 
                         <tr>
@@ -25,9 +28,8 @@
                         </tr>
                   <t t-foreach="docs" t-as="o">
                         <tr>
-                            <td><t t-esc="o['sequence']"/></td>
+                            <td><t t-esc="o_index"/></td>
                             <td> <t t-esc="o['name']"/></td>
-                            <td> <t t-esc="o['vehicle_id']"/></td>
                             <td> <t t-esc="o['from_date']"/></td>
                             <td> <t t-esc="o['to_date']"/></td>
                             <td> <t t-esc="o['state']"/></td>
