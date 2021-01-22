@@ -9,34 +9,61 @@
                     <center>
                         <h2>Vehicle Rent Report</h2>
                     </center>
-                    <h6>Date:
-                        <span t-esc="date_today"/>
-                    </h6>
-                    <h6>Date:
-                        <span t-esc="vehicle_id"/>
-                    </h6>
+
+                        <h6>Date :
+                            <span t-esc="date_today"/>
+                        </h6>
+                        <h6>Vehicle :
+                            <span t-esc="vehicle_name"/>
+                        </h6>
+                        <h6>From Date:
+                            <span t-esc="from_date"/>
+                        </h6>
+                        <h6>To Date :
+                            <span t-esc="to_date"/>
+                        </h6>
+
                     <table class="table table-bordered">
 
                         <tr>
                             <td>Sl no</td>
-                            <td>Customer name</td>
                             <td>Vehicle Name</td>
+                            <td>Customer Name</td>
+
+                            <td>Model</td>
                             <td>From Date</td>
                             <td>To Date</td>
                             <td>State</td>
 
                         </tr>
-                  <t t-foreach="docs" t-as="o">
-                        <tr>
-                            <td><t t-esc="o_index"/></td>
-                            <td> <t t-esc="o['name']"/></td>
-                            <td> <t t-esc="o['from_date']"/></td>
-                            <td> <t t-esc="o['to_date']"/></td>
-                            <td> <t t-esc="o['state']"/></td>
-                        </tr>
+                        <t t-foreach="docs" t-as="o">
+                            <tr>
+                                <td>
+                                    <t t-esc="o_index+1"/>
+                                </td>
+                                <td>
+                                    <t t-esc="o['vehicle_name']"/>
+                                </td>
+
+                                <td>
+                                    <t t-esc="o['name']"/>
+                                </td>
+                                 <td>
+                                    <t t-esc="o['model']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="o['from_date']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="o['to_date']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="o['state']"/>
+                                </td>
+                            </tr>
 
 
-                    </t>
+                        </t>
                     </table>
                 </div>
             </t>

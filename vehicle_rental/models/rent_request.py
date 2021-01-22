@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
-from datetime import datetime
 
 
 class RentRequest(models.Model):
@@ -12,13 +11,13 @@ class RentRequest(models.Model):
     _rec_name = 'sequence'
 
     sequence = fields.Char(string="Number", readonly=True, required=True,
-                       copy=False, default='New')
+                           copy=False, default='New')
     customer_id = fields.Many2one('res.partner', string="Customer Name",
-                                  track_visibility='always')
+                                  required=True, track_visibility='always')
     request_date = fields.Date('Request Date', default=fields.Date.today)
     vehicle_id = fields.Many2one('vehicle.rental', string="Vehicle",
-                                 track_visibility='always',domain=[(
-                                 'state', '=', 'available')])
+                                 track_visibility='always', domain=[(
+                                'state', '=', 'available')], required=True)
     from_date = fields.Date('From date')
     to_date = fields.Date('To date')
     period = fields.Integer(string='Period', default=1)
@@ -32,7 +31,8 @@ class RentRequest(models.Model):
                                  store=True)
     state = fields.Selection(
         [('draft', 'Draft'), ('confirm', 'Confirm'), ('invoiced', 'Invoiced'),
-         ('returned', 'Returned')], string="State", default='draft',track_visibility='always')
+         ('returned', 'Returned')], string="State", default='draft',
+        track_visibility='always')
     warning = fields.Boolean(string='Warning', default=False,
                              compute="_compute_warning")
     late = fields.Boolean(string='Late', default=False,
@@ -40,16 +40,19 @@ class RentRequest(models.Model):
     invoice_id = fields.Many2one('account.move', string="Invoice")
     is_paid = fields.Boolean(string='paid', default=False,
                              compute="_compute_paid")
+    product_id = fields.Many2one('product.product', string="Product")
 
     def _compute_warning(self):
         """ compute warning """
         for rec in self:
+            rec.warning = False
             rec.warning = rec.state == 'confirm' and rec.to_date and (
                     rec.to_date - fields.Date.today()).days <= 2
 
     def _compute_late(self):
         """ compute late """
         for rec in self:
+            rec.late = False
             rec.late = rec.state == 'confirm' and rec.to_date and (
                     rec.to_date < fields.Date.today())
 
@@ -107,18 +110,21 @@ class RentRequest(models.Model):
 
     def action_invoice(self):
         """ Invoice creation """
+        self.product_id = self.env['product.product'].search(
+            [('name', '=', 'Rental Service')])
         invoice = self.env['account.move'].create({
             'move_type': 'out_invoice',
             'invoice_date': fields.Date.today(),
-            'l10n_in_gst_treatment':self.customer_id.l10n_in_gst_treatment,
+            'l10n_in_gst_treatment': self.customer_id.l10n_in_gst_treatment,
             'date': self.to_date,
             'partner_id': self.customer_id.id,
             'currency_id': self.currency_id.id,
             'invoice_line_ids': [(0, 0, {
                 'product_id': self.env['product.product'].search(
-                    [('name', '=','Rental Service' )]),
+                    [('name', '=', 'Rental Service')]),
                 'name': self.vehicle_id.vehicle_name,
                 'price_unit': self.rent_total,
+                'tax_ids': self.product_id.taxes_id,
 
             })],
         })
@@ -149,11 +155,11 @@ class RequestCharges(models.Model):
 
     vehicle_id = fields.Many2one('vehicle.rental', string="Vehicle")
     time = fields.Selection(
-        [('hour', 'Hour'), ('day', 'Day'),
-         ('week', 'Week'), ('month', 'Month')], string="Time", default='hour',
+        [('Hour', 'Hour'), ('Day', 'Day'),
+         ('Week', 'Week'), ('Month', 'Month')], string="Time", default='Hour',
         store=True)
 
     amount = fields.Monetary(string='Amount')
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda
-                                  self: self.env.user.company_id.currency_id)
+                                      self: self.env.user.company_id.currency_id)

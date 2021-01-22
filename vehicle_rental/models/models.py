@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 from odoo.exceptions import ValidationError
 from datetime import datetime
 
@@ -54,8 +54,8 @@ class VehicleRental(models.Model):
             list = []
             for l in rec.charge_ids:
                 if l.time in list:
-                    raise ValidationError(
-                        "Time period duplicated! Check Properly!!")
+                    raise ValidationError(_(
+                        "'%s' period is duplicated! Check Properly!!",l.time))
                 list.append(l.time)
 
     def vehicle_requests(self):
